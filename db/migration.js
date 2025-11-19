@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR (255),
     last_name VARCHAR (255),
     password VARCHAR (255),
-    is_member BOOLEAN,
-    is_admin BOOLEAN,
+    is_member BOOLEAN DEFAULT false,
+    is_admin BOOLEAN DEFAULT false,
     added TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS messages (
     added TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
-CREATE TABLE "session" (
+CREATE TABLE IF NOT EXISTS "session" (
   "sid" varchar NOT NULL COLLATE "default",
   "sess" json NOT NULL,
   "expire" timestamp(6) NOT NULL
