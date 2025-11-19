@@ -43,9 +43,6 @@ module.exports.getUser = async (userId) => {
 
     return user;
 }
-// Queries
-// 6. Post Create Message
-// 7. Delete Message (Admin Only)
 
 // 5. Update user membership
 module.exports.updateUserMembership = async (userId, isMember) => {
@@ -56,5 +53,18 @@ module.exports.updateUserMembership = async (userId, isMember) => {
         RETURNING *
         `, [userId, isMember]);
     
+    return rows[0];
+}
+
+// Queries
+// 6. Post Create Message
+// 7. Delete Message (Admin Only)
+module.exports.createMessage = async (title, message, userId) => {
+    const { rows } = await pool.query(`
+        INSERT INTO messages (title, message, user_id)
+        VALUES ($1, $2, $3)
+        RETURNING *
+        `, [title, message, userId]);
+
     return rows[0];
 }
