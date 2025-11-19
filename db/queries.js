@@ -1,10 +1,5 @@
 const pool = require("./pool")
 
-// Queries
-// 4. Get User
-// 5. Update user membership
-// 6. Post Create Message
-// 7. Delete Message (Admin Only)
 
 
 // 1. Get All Messages With Users
@@ -19,8 +14,8 @@ module.exports.getAllMessagesWithUsers = async () => {
 // 2. Get All Messages Without Users
 module.exports.getAllMessagesWithoutUsers = async () => {
     const { rows } = await pool.query(`
-            SELECT * FROM messages
-            `);
+        SELECT * FROM messages
+        `);
 
     return rows;
 }
@@ -37,4 +32,18 @@ module.exports.createUser = async (
     const userId = rows[0];
 
     return !!userId;
+}
+// Queries
+// 5. Update user membership
+// 6. Post Create Message
+// 7. Delete Message (Admin Only)
+// 4. Get User
+module.exports.getUser = async (userId) => {
+    const { rows } = await pool.query(`
+        SELECT * FROM users WHERE id = $1
+        `, [userId]);
+
+    const user = rows[0]
+    
+    return user;
 }
