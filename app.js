@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('node:path');
 const pool = require('./db/pool');
+const passport = require('passport');
 require('dotenv').config();
 const pgStore = require('connect-pg-simple')(session)
 
@@ -32,6 +33,11 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24
     }
 }));
+
+// Passport Setup
+require('./config/passport'); 
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', async (req, res) => {
     console.log(req.session);
