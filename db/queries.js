@@ -5,18 +5,18 @@ const pool = require("./pool")
 // 1. Get All Messages With Users
 module.exports.getAllMessagesWithUsers = async () => {
     const { rows } = await pool.query(`
-        SELECT id, title, message, timestamp FROM messages
+        SELECT m.id, m.title, m.message, u.username, m.added 
+        FROM messages as m
+        LEFT JOIN users as u ON (m.user_id = u.id)
         `)
-
     return rows;
 }
 
 // 2. Get All Messages Without Users
 module.exports.getAllMessagesWithoutUsers = async () => {
     const { rows } = await pool.query(`
-        SELECT * FROM messages
+        SELECT id, title, message, 'Anonymous' as username, added FROM messages
         `);
-
     return rows;
 }
 
