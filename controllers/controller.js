@@ -22,6 +22,13 @@ const validateUser = [
     }).withMessage("Passwords does not match.")
 ]
 
+const validateMessage = [
+    body("title").trim()
+        .isLength({min: 1}).withMessage("Title must atleast have 1 character."),
+    body("message").trim()
+        .isLength({min: 1}).withMessage("Message must atleast have 1 character.")
+]
+
 
 // Get Index (Query will depend on User)
 module.exports.indexPageGet = async (req, res) => {
@@ -49,8 +56,13 @@ module.exports.createMessageGet = [
 // Post Message
 module.exports.createMessagePost = [
     isAuth,
+    validateMessage,
     async (req, res) => {
-        // Must be authenticated
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render('create-message', { errors: errors.array() })
+        }
+
         const { title, message } = req.body;
         const userId = req.user.id;
         await query.createMessage(title, message, userId);
