@@ -254,3 +254,27 @@ input:focus, textarea:focus{ box-shadow: var(--focus); outline:none; }
   .errors { transition: box-shadow .12s ease, transform .12s ease; }
 }
 .errors__item:focus { outline: none; box-shadow: var(--focus); }
+
+/* Message timestamp / meta */
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.message-added {
+  font-size: 0.8rem;
+  color: rgba(15,23,36,0.45);
+  white-space: nowrap;
+}
+
+/* optional: author label next to timestamp */
+.message-author {
+  font-weight: 600;
+  color: var(--primary);
+  margin-right: 0.5rem;
+}

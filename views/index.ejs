@@ -21,8 +21,13 @@
                         <article class="card" role="listitem" aria-label="Message by <%= msg.username %>">
                             <h3><%= msg.title %></h3>
                             <p class="muted"><%= msg.message %></p>
-                            <div class="align-right">
-                                <span class="muted">— <%= msg.username %></span>
+
+                            <div class="message-meta">
+                              <div class="message-author">— <%= msg.username %></div>
+                              <div class="message-added"><%= msg.added ? (new Date(msg.added)).toLocaleString() : '' %></div>
+                            </div>
+
+                            <div class="align-right" style="margin-top:.5rem">
                                 <% if (locals.isAdmin) { %>
                                     <a class="btn secondary" href="/message/<%= msg.id %>/delete">Delete</a>
                                 <% } %>
