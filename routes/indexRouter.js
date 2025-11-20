@@ -7,6 +7,8 @@ indexRouter.get('/sign-up', controller.createUserGet);
 indexRouter.post("/sign-up", controller.createUserPost);
 indexRouter.get("/login", controller.loginGet);
 indexRouter.post("/login", controller.loginPost);
+indexRouter.get("/membership", controller.updateMembershipGet);
+indexRouter.post("/membership", controller.updateMembershipPost);
 indexRouter.get('/', controller.indexPageGet);
 
 

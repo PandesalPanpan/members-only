@@ -1,6 +1,7 @@
 const passport = require('passport');
 const query = require('../db/queries');
 const { hashPassword } = require('../lib/passwordUtils');
+const { isAuth } = require('../middlewares/auth');
 
 require('../db/queries');
 // Get Index (Query will depend on User)
@@ -72,22 +73,30 @@ module.exports.logout = (req, res) => {
 }
 
 // Get Membership Page
-module.exports.updateMembershipGet = (req, res) => {
-    // Must be authenticated
-    res.render("membership");
-}
+module.exports.updateMembershipGet = [
+    isAuth,
+    (req, res) => {
+        // Must be authenticated
+        res.render("membership");
+    }
+]
 
 // Post Membership to User
-module.exports.updateMembershipPost = async (req, res) => {
-    // Must be authenticated
-    // Grab the userId from the request
-    const { passcode } = req.body;
-    
-    if (passcode === null) {
-        res.render("membership", {errors: 'Invalid passcode'});
-    }
+module.exports.updateMembershipPost = [
+    isAuth,
+    async (req, res) => {
+        const { passcode } = req.body;
 
-    await query.updateUserMembership(req.user.id, true);
-    
-    res.redirect('/')
-}
+        if (passcode !== "null") {
+            return res.render("membership", {
+                errors: [
+                    { msg: "Invalid passcode " }
+                ]
+            });
+        }
+
+        await query.updateUserMembership(req.user.id, true);
+
+        res.redirect('/')
+    }
+]
