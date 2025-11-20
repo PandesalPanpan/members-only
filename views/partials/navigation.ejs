@@ -1,7 +1,12 @@
 <nav>
     <a href="/">Home</a>
-    <a href="/sign-up">Sign up</a>
-    <a href="/login">Login</a>
-    <a href="/create-message">Create Message</a>
-    <a href="/membership">Get Membership</a>
+    <% if (!locals.isAuthenticated) { %>
+        <a href="/sign-up">Sign up</a>
+        <a href="/login">Login</a>
+        <% } else { %> 
+            <a href="/logout">Logout</a>
+            <a href="/create-message">Create Message</a>
+            <a href="/membership">Get Membership</a>
+            <p>Welcome, <%= locals.username %></p>
+            <% } %>
 </nav>
