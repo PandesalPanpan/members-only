@@ -7,19 +7,15 @@ require('../db/queries');
 // Get Index (Query will depend on User)
 module.exports.indexPageGet = async (req, res) => {
     let messages;
-    const isAuthenticated = !!req.user;
-    const isMember = !!(req.user && req.user.is_member);
-    const isAdmin = !!(req.user && req.user.is_admin);
-
-    if (!isAuthenticated || isMember === false) {
+    if (!res.locals.isAuthenticated || res.locals.isMember === false) {
         messages = await query.getAllMessagesWithoutUsers();
-    } else if (isAdmin || isMember) {
+    } else if (res.locals.isAdmin || res.locals.isMember) {
         messages = await query.getAllMessagesWithUsers();
     } else {
         messages = await query.getAllMessagesWithoutUsers();
     }
 
-    res.render('index', { messages, isAdmin });
+    res.render('index', { messages });
 }
 
 // Get Create Message Page 
