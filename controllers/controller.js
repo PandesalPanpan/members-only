@@ -94,7 +94,10 @@ module.exports.logout = [
 module.exports.updateMembershipGet = [
     isAuth,
     (req, res) => {
-        // Must be authenticated
+        if (req.user.is_member) {
+            return res.redirect('/');
+        }
+
         res.render("membership");
     }
 ]
@@ -103,6 +106,10 @@ module.exports.updateMembershipGet = [
 module.exports.updateMembershipPost = [
     isAuth,
     async (req, res) => {
+        if (req.user.is_member) {
+            return res.redirect('/');
+        }
+
         const { passcode } = req.body;
 
         if (passcode !== "null") {
