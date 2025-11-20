@@ -44,14 +44,15 @@ module.exports.createMessagePost = [
 ]
 
 // Delete Message
-module.exports.deleteMessage = async (req, res) => {
-    // Must be admin
+module.exports.deleteMessage = [
+    isAdmin,
+    async (req, res) => {
+        const { messageId } = req.params;
+        await query.deleteMessage(messageId);
+        res.redirect('/');
+    }
 
-    const { message_id } = req.params;
-    await query.deleteMessage(message_id);
-
-    res.redirect('/');
-}
+]
 
 // Get Create User Page
 module.exports.createUserGet = (req, res) => {

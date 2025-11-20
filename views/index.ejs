@@ -29,7 +29,7 @@
                             <td><%=message.message%></td>
                             <td><%=message.username%></td>
                             <% if (locals.isAdmin) { %> 
-                                <td><button>Delete</button></td>
+                                <td><button onclick="location.href='/message/<%=message.id%>/delete'">Delete</button></td>
                             <% } %>
                         </tr>
                     <% }) %>
