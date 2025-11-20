@@ -1,7 +1,7 @@
 const passport = require('passport');
 const query = require('../db/queries');
 const { hashPassword } = require('../lib/passwordUtils');
-const { isAuth } = require('../middlewares/auth');
+const { isAuth, isAdmin } = require('../middlewares/auth');
 
 require('../db/queries');
 // Get Index (Query will depend on User)

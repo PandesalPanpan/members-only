@@ -1,12 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <%- include("partials/navigation.ejs") %>
-    This is the index page
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Message</th>
+                    <th>Author</th>
+                    <% if (locals.isAdmin) { %>
+                        <th>Action</th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.messages) { %>
+                    <% messages.map((message) => { %>
+                        <tr>
+                            <td><%=message.title%> </td>
+                            <td><%=message.message%></td>
+                            <td><%=message.username%></td>
+                            <% if (locals.isAdmin) { %> 
+                                <td><button>Delete</button></td>
+                            <% } %>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+
+
 </body>
+
 </html>
