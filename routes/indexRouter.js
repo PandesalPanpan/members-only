@@ -11,6 +11,7 @@ indexRouter.get("/membership", controller.updateMembershipGet);
 indexRouter.post("/membership", controller.updateMembershipPost);
 indexRouter.get("/create-message", controller.createMessageGet);
 indexRouter.post("/create-message", controller.createMessagePost);
+indexRouter.get("/logout", controller.logout);
 indexRouter.get('/', controller.indexPageGet);
 
 
