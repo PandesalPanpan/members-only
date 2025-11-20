@@ -1,7 +1,7 @@
 <% if (locals.errors) { %>
-    <ul>
-        <% errors.map((error) => { %>
-            <li><%= error.msg %></li>
-        <% }) %>
-    </ul>
+  <ul class="errors" role="list">
+    <% errors.forEach((error) => { %>
+      <li class="errors__item" role="alert"><%= error.msg %></li>
+    <% }) %>
+  </ul>
 <% } %>

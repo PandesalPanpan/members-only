@@ -1,8 +1,33 @@
-<%- include("partials/navigation.ejs") %>
-<form action="membership" method="POST">
-    <label for="passcode">Membership Passcode: 
-        <input name="passcode" type="password">
-    </label>
-    <button type="submit">Submit</button>
-</form>
-<%- include("partials/errors.ejs") %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <%- include("partials/navigation.ejs") %>
+
+        <div class="container">
+            <h1>Membership</h1>
+
+            <form action="/membership" method="POST" class="card" aria-labelledby="membership-heading">
+                <div class="form-group">
+                    <label for="passcode">Membership Passcode</label>
+                    <input id="passcode" name="passcode" type="password" required>
+                </div>
+
+                <div style="margin-top:.5rem">
+                    <button type="submit" class="btn">Submit</button>
+                    <a href="/" class="btn secondary" style="margin-left:.5rem">Cancel</a>
+                </div>
+            </form>
+
+            <%- include("partials/errors.ejs") %>
+        </div>
+</body>
+
+</html>

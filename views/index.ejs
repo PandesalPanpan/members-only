@@ -9,35 +9,32 @@
 </head>
 
 <body>
-    <%- include("partials/navigation.ejs") %>
-        <table>
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Message</th>
-                    <th>Author</th>
-                    <% if (locals.isAdmin) { %>
-                        <th>Action</th>
-                    <% } %>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (locals.messages) { %>
-                    <% messages.map((message) => { %>
-                        <tr>
-                            <td><%=message.title%> </td>
-                            <td><%=message.message%></td>
-                            <td><%=message.username%></td>
-                            <% if (locals.isAdmin) { %> 
-                                <td><button onclick="location.href='/message/<%=message.id%>/delete'">Delete</button></td>
-                            <% } %>
-                        </tr>
+    <div class="container">
+        <%- include("partials/navigation.ejs") %>
+
+        <section>
+            <h1 class="muted">Messages</h1>
+
+            <% if (messages && messages.length) { %>
+                <div class="messages" role="list">
+                    <% messages.forEach(msg => { %>
+                        <article class="card" role="listitem" aria-label="Message by <%= msg.username %>">
+                            <h3><%= msg.title %></h3>
+                            <p class="muted"><%= msg.message %></p>
+                            <div class="align-right">
+                                <span class="muted">— <%= msg.username %></span>
+                                <% if (locals.isAdmin) { %>
+                                    <a class="btn secondary" href="/message/<%= msg.id %>/delete">Delete</a>
+                                <% } %>
+                            </div>
+                        </article>
                     <% }) %>
-                <% } %>
-            </tbody>
-        </table>
-
-
+                </div>
+            <% } else { %>
+                <p class="muted">No messages yet.</p>
+            <% } %>
+        </section>
+    </div>
 </body>
 
 </html>

@@ -1,12 +1,14 @@
-<nav>
-    <a href="/">Home</a>
-    <% if (!locals.isAuthenticated) { %>
-        <a href="/sign-up">Sign up</a>
-        <a href="/login">Login</a>
-        <% } else { %> 
-            <a href="/logout">Logout</a>
-            <a href="/create-message">Create Message</a>
-            <a href="/membership">Get Membership</a>
-            <p>Welcome, <%= locals.username %></p>
-            <% } %>
+<nav class="container">
+  <a href="/">Home</a>
+  <div class="spacer"></div>
+
+  <% if (!isAuthenticated) { %>
+    <a class="btn" href="/sign-up">Sign up</a>
+    <a class="btn secondary" href="/login">Login</a>
+  <% } else { %>
+    <a class="btn secondary" href="/create-message">Create</a>
+    <a class="btn secondary" href="/membership">Membership</a>
+    <a class="btn danger" href="/logout">Logout</a>
+    <div class="muted" style="margin-left:.5rem">Welcome, <%= currentUser ? currentUser.username : 'Guest' %></div>
+  <% } %>
 </nav>
