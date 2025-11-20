@@ -5,11 +5,21 @@ const { isAuth } = require('../middlewares/auth');
 
 require('../db/queries');
 // Get Index (Query will depend on User)
-module.exports.indexPageGet = (req, res) => {
-    // Attach middleware here for auth, membership, and admin
-    console.log(req.session);
-    console.log(req.user);
-    res.render('index');
+module.exports.indexPageGet = async (req, res) => {
+    let messages;
+    const isAuthenticated = !!req.user;
+    const isMember = !!(req.user && req.user.is_member);
+    const isAdmin = !!(req.user && req.user.is_admin);
+
+    if (!isAuthenticated || isMember === false) {
+        messages = await query.getAllMessagesWithoutUsers();
+    } else if (isAdmin || isMember) {
+        messages = await query.getAllMessagesWithUsers();
+    } else {
+        messages = await query.getAllMessagesWithoutUsers();
+    }
+
+    res.render('index', { messages, isAdmin });
 }
 
 // Get Create Message Page 
