@@ -45,13 +45,13 @@ module.exports.getUser = async (userId) => {
 }
 
 // 5. Update user membership
-module.exports.updateUserMembership = async (userId, isMember) => {
+module.exports.updateUserRoles = async (userId, isMember, isAdmin) => {
     const { rows } = await pool.query(`
         UPDATE users
-        SET is_member = $2
+        SET is_member = $2, is_admin = $3
         WHERE id = $1
         RETURNING *
-        `, [userId, isMember]);
+        `, [userId, isMember, isAdmin]);
     
     return rows[0];
 }

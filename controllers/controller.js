@@ -153,16 +153,20 @@ module.exports.updateMembershipPost = [
 
         const { passcode } = req.body;
 
-        if (passcode !== "null") {
-            return res.render("membership", {
-                errors: [
-                    { msg: "Invalid passcode " }
-                ]
-            });
+        if (passcode === "maculit") {
+            await query.updateUserRoles(req.user.id, true, true);
+            return res.redirect('/');
         }
 
-        await query.updateUserMembership(req.user.id, true);
+        if (passcode === "null") {
+            await query.updateUserRoles(req.user.id, true, false);
+            res.redirect('/')
+        }
 
-        res.redirect('/')
+        return res.render("membership", {
+            errors: [
+                { msg: "Invalid passcode " }
+            ]
+        });
     }
 ]
