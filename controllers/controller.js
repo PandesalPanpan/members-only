@@ -13,18 +13,25 @@ module.exports.indexPageGet = (req, res) => {
 }
 
 // Get Create Message Page 
-module.exports.createMessageGet = (req, res) => {
-    // Must be authenticated
-    res.render('create-message');
-}
+module.exports.createMessageGet = [
+    isAuth,
+    (req, res) => {
+        // Must be authenticated
+        res.render('create-message');
+    }
+]
 
 // Post Message
-module.exports.createMessagePost = async (req, res) => {
-    // Must be authenticated
-    const { title, message } = req.body;
-    await query.createMessage(title, message);
-    res.redirect('/');
-}
+module.exports.createMessagePost = [
+    isAuth,
+    async (req, res) => {
+        // Must be authenticated
+        const { title, message } = req.body;
+        const userId = req.user.id;
+        await query.createMessage(title, message, userId);
+        res.redirect('/');
+    }
+]
 
 // Delete Message
 module.exports.deleteMessage = async (req, res) => {
