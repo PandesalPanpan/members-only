@@ -5,6 +5,7 @@ const pool = require('./db/pool');
 const passport = require('passport');
 require('dotenv').config();
 const pgStore = require('connect-pg-simple')(session)
+const indexRouter = require('./routes/indexRouter');
 
 // General Setup
 const PORT = 3000;
@@ -39,10 +40,7 @@ require('./config/passport');
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/', async (req, res) => {
-    console.log(req.session);
-    res.send("<h1>Check your application cookie.</h1>");
-})
+app.use('/', indexRouter);
 
 
 app.listen(PORT, (error) => {
