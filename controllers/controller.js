@@ -57,6 +57,7 @@ module.exports.createMessageGet = [
 module.exports.createMessagePost = [
     isAuth,
     validateMessage,
+    validateMessage,
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
