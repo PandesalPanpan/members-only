@@ -2,8 +2,27 @@ const passport = require('passport');
 const query = require('../db/queries');
 const { hashPassword } = require('../lib/passwordUtils');
 const { isAuth, isAdmin } = require('../middlewares/auth');
-
+const { body, validationResult } = require('express-validator');
 require('../db/queries');
+
+const validateUser = [
+    body("username").trim()
+        .isAlphanumeric().withMessage("Username must only contain alphanumerics characters.")
+        .isLength({ min: 6 }).withMessage("Username must be atleast 6 characters."),
+    body("first_name").trim()
+        .isAlpha().withMessage("First name must only contain alpha characters.")
+        .isLength({ min: 2 }).withMessage("First name must be atleast 2 characters."),
+    body("last_name").trim()
+        .isAlpha().withMessage("Last name must only contain alpha characters.")
+        .isLength({ min: 2 }).withMessage("Last name must be atleast 2 characters."),
+    body("password")
+        .isLength({ min: 8 }).withMessage("Password minimum is 8 characters"),
+    body("confirm_password").custom((value, { req }) => {
+        return value === req.body.password
+    }).withMessage("Passwords does not match.")
+]
+
+
 // Get Index (Query will depend on User)
 module.exports.indexPageGet = async (req, res) => {
     let messages;
@@ -56,14 +75,24 @@ module.exports.createUserGet = (req, res) => {
 }
 
 // Post Create User
-module.exports.createUserPost = async (req, res) => {
-    const { username, first_name, last_name, password } = req.body;
+module.exports.createUserPost = [
+    validateUser,
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render('sign-up', {
+                errors: errors.array()
+            });
+        }
 
-    const hashedPassword = await hashPassword(password);
+        const { username, first_name, last_name, password } = req.body;
 
-    await query.createUser(username, first_name, last_name, hashedPassword);
-    res.redirect('/login');
-}
+        const hashedPassword = await hashPassword(password);
+
+        await query.createUser(username, first_name, last_name, hashedPassword);
+        res.redirect('/login');
+    }
+]
 
 // Get Login User Page
 module.exports.loginGet = (req, res) => {
