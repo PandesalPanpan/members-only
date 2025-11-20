@@ -83,11 +83,15 @@ module.exports.loginPost = passport.authenticate(
 );
 
 // Get Logout User
-module.exports.logout = (req, res) => {
-    // Removing the passport user in the req property?
-    req.logout();
-    res.redirect('/');
-}
+module.exports.logout = [
+    isAuth,
+    (req, res, next) => {
+        req.logout((err) => {
+            if (err) return next(err);
+            res.redirect('/');
+        });
+    }
+]
 
 // Get Membership Page
 module.exports.updateMembershipGet = [
