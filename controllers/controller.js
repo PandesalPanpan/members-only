@@ -2,8 +2,34 @@ const passport = require('passport');
 const query = require('../db/queries');
 const { hashPassword } = require('../lib/passwordUtils');
 const { isAuth, isAdmin } = require('../middlewares/auth');
-
+const { body, validationResult } = require('express-validator');
 require('../db/queries');
+
+const validateUser = [
+    body("username").trim()
+        .isAlphanumeric().withMessage("Username must only contain alphanumerics characters.")
+        .isLength({ min: 6 }).withMessage("Username must be atleast 6 characters."),
+    body("first_name").trim()
+        .isAlpha().withMessage("First name must only contain alpha characters.")
+        .isLength({ min: 2 }).withMessage("First name must be atleast 2 characters."),
+    body("last_name").trim()
+        .isAlpha().withMessage("Last name must only contain alpha characters.")
+        .isLength({ min: 2 }).withMessage("Last name must be atleast 2 characters."),
+    body("password")
+        .isLength({ min: 8 }).withMessage("Password minimum is 8 characters"),
+    body("confirm_password").custom((value, { req }) => {
+        return value === req.body.password
+    }).withMessage("Passwords does not match.")
+]
+
+const validateMessage = [
+    body("title").trim()
+        .isLength({ min: 1 }).withMessage("Title must atleast have 1 character."),
+    body("message").trim()
+        .isLength({ min: 1 }).withMessage("Message must atleast have 1 character.")
+]
+
+
 // Get Index (Query will depend on User)
 module.exports.indexPageGet = async (req, res) => {
     let messages;
@@ -30,8 +56,14 @@ module.exports.createMessageGet = [
 // Post Message
 module.exports.createMessagePost = [
     isAuth,
+    validateMessage,
+    validateMessage,
     async (req, res) => {
-        // Must be authenticated
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render('create-message', { errors: errors.array() })
+        }
+
         const { title, message } = req.body;
         const userId = req.user.id;
         await query.createMessage(title, message, userId);
@@ -56,14 +88,24 @@ module.exports.createUserGet = (req, res) => {
 }
 
 // Post Create User
-module.exports.createUserPost = async (req, res) => {
-    const { username, first_name, last_name, password } = req.body;
+module.exports.createUserPost = [
+    validateUser,
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render('sign-up', {
+                errors: errors.array()
+            });
+        }
 
-    const hashedPassword = await hashPassword(password);
+        const { username, first_name, last_name, password } = req.body;
 
-    await query.createUser(username, first_name, last_name, hashedPassword);
-    res.redirect('/login');
-}
+        const hashedPassword = await hashPassword(password);
+
+        await query.createUser(username, first_name, last_name, hashedPassword);
+        res.redirect('/login');
+    }
+]
 
 // Get Login User Page
 module.exports.loginGet = (req, res) => {
@@ -112,16 +154,20 @@ module.exports.updateMembershipPost = [
 
         const { passcode } = req.body;
 
-        if (passcode !== "null") {
-            return res.render("membership", {
-                errors: [
-                    { msg: "Invalid passcode " }
-                ]
-            });
+        if (passcode === "maculit") {
+            await query.updateUserRoles(req.user.id, true, true);
+            return res.redirect('/');
         }
 
-        await query.updateUserMembership(req.user.id, true);
+        if (passcode === "null") {
+            await query.updateUserRoles(req.user.id, true, false);
+            res.redirect('/')
+        }
 
-        res.redirect('/')
+        return res.render("membership", {
+            errors: [
+                { msg: "Invalid passcode " }
+            ]
+        });
     }
 ]
