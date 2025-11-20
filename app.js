@@ -6,6 +6,7 @@ const passport = require('passport');
 require('dotenv').config();
 const pgStore = require('connect-pg-simple')(session)
 const indexRouter = require('./routes/indexRouter');
+const { currentUserMiddleware } = require('./middlewares/currentUser');
 
 // General Setup
 const PORT = 3000;
@@ -39,6 +40,8 @@ app.use(session({
 require('./config/passport'); 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(currentUserMiddleware);
 
 app.use('/', indexRouter);
 
