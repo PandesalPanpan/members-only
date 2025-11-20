@@ -1,5 +1,6 @@
 const passport = require("passport");
 const pool = require("../db/pool");
+const { validatedPassword } = require("../lib/passwordUtils");
 const LocalStrategy = require('passport-local').Strategy;
 
 
@@ -12,7 +13,7 @@ const verifyCallback = async (username, password, done) => {
             done(null, false, { message: "User is not found." });
         }
 
-        const match = await bcrypt.compare(password, user.password);
+        const match = validatedPassword(password, user.password);
         if (!match) {
             return done(null, false, { message: "Password is incorrect."});
         }

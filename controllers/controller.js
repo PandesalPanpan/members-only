@@ -1,10 +1,13 @@
+const passport = require('passport');
 const query = require('../db/queries');
+const { hashPassword } = require('../lib/passwordUtils');
 
 require('../db/queries');
 // Get Index (Query will depend on User)
 module.exports.indexPageGet = (req, res) => {
     // Attach middleware here for auth, membership, and admin
-
+    console.log(req.session);
+    console.log(req.user);
     res.render('index');
 }
 
@@ -41,8 +44,10 @@ module.exports.createUserGet = (req, res) => {
 module.exports.createUserPost = async (req, res) => {
     const { username, first_name, last_name, password } = req.body;
 
-    await query.createUser(username, first_name, last_name, password);
-    res.redirect('/');
+    const hashedPassword = await hashPassword(password);
+
+    await query.createUser(username, first_name, last_name, hashedPassword);
+    res.redirect('/login');
 }
 
 // Get Login User Page
@@ -51,17 +56,19 @@ module.exports.loginGet = (req, res) => {
 }
 
 // Post Login
-module.exports.loginPost = (req, res) => {
-    // Authenticate
-
-    res.redirect('/');
-}
+module.exports.loginPost = passport.authenticate(
+    "local",
+    {
+        failureRedirect: '/login-failure',
+        successRedirect: "/"
+    }
+);
 
 // Get Logout User
 module.exports.logout = (req, res) => {
-    // Must be authenticated
     // Removing the passport user in the req property?
-    res.direct('/');
+    req.logout();
+    res.redirect('/');
 }
 
 // Get Membership Page
